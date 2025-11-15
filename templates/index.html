@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Élite</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        :root {
+            --color-neon-green: #39ff14;
+            --color-dark-jungle: #0a1a0a;
+            --color-dark-gray: #1a1a1a;
+            --color-text-light: #ffffff;
+            --color-text-dark: #000000;
+        }
+
+        body {
+            background-image: url('{{ url_for('static', filename='assets/fondo.png') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Para que el fondo no se mueva con el scroll */
+            font-family: 'Press Start 2P', cursive; /* Fuente pixelada */
+            color: var(--color-text-light);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(3px) brightness(60%); /* Menos blur y más oscuro */
+        }
+
+        .scanline-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(0, 0, 0, 0.1) 0px,
+                rgba(0, 0, 0, 0.1) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .main-container {
+            background-color: rgba(0, 0, 0, 0.85);
+            border: 3px solid var(--color-neon-green);
+            box-shadow: 0 0 30px var(--color-neon-green);
+            padding: 30px 50px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: flicker 1.5s infinite alternate; /* Efecto de parpadeo */
+        }
+
+        @keyframes flicker {
+            0%, 100% { box-shadow: 0 0 30px var(--color-neon-green); }
+            50% { box-shadow: 0 0 20px var(--color-neon-green), 0 0 40px var(--color-neon-green); }
+        }
+
+        .main-container::before { /* Efecto de escaneo en el borde */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 3px solid var(--color-neon-green);
+            pointer-events: none;
+            box-sizing: border-box;
+            animation: border-flicker 2s infinite alternate;
+        }
+
+        @keyframes border-flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        h1 {
+            color: var(--color-neon-green);
+            font-size: 3em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 5px;
+            text-shadow: 0 0 15px var(--color-neon-green), 0 0 5px var(--color-neon-green);
+            line-height: 1.1;
+        }
+
+        .tagline {
+            color: var(--color-text-light);
+            font-size: 1em;
+            margin-bottom: 0;
+            text-shadow: 1px 1px 3px var(--color-dark-gray);
+        }
+
+        .form-container {
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px var(--color-neon-green);
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            border: 2px solid var(--color-neon-green);
+            animation: pulse-glow 3s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px var(--color-neon-green); }
+            50% { box-shadow: 0 0 30px var(--color-neon-green), 0 0 10px var(--color-neon-green); }
+        }
+
+        h2 {
+            color: var(--color-neon-green);
+            font-size: 2em;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--color-neon-green);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px var(--color-neon-green);
+        }
+
+        input[type="text"], input[type="email"], input[type="number"] {
+            width: calc(100% - 24px);
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid var(--color-neon-green);
+            background-color: var(--color-dark-gray);
+            color: var(--color-text-light);
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1em;
+            font-family: 'Press Start 2P', cursive;
+            text-shadow: 1px 1px 2px var(--color-dark-jungle);
+        }
+
+        input[type="text"]::placeholder, 
+        input[type="email"]::placeholder, 
+        input[type="number"]::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        button[type="submit"] {
+            background-color: var(--color-neon-green);
+            color: var(--color-text-dark);
+            border: none;
+            padding: 15px 30px;
+            text-transform: uppercase;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+            font-size: 1.2em;
+            font-family: 'Press Start 2P', cursive;
+            box-shadow: 0 0 10px var(--color-neon-green);
+        }
+
+        button[type="submit"]:hover {
+            background-color: #6eff6e;
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px #6eff6e;
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(0);
+            box-shadow: 0 0 8px var(--color-neon-green);
+        }
+
+        br {
+            display: none; /* Quitamos los saltos de línea innecesarios */
+        }
+    </style>
+</head>
+<body>
+    <div class="scanline-overlay"></div> <div class="main-container">
+        <h1>¡Dead Island Llego a tu Aburrida vida!</h1> 
+        <p class="tagline">"La jungla te espera. La misión es ahora."</p>
+    </div>
+    <div class="form-container">
+        <h2>Registro de Participantes</h2>
+        <form action="/registrar" method="POST">
+            <input type="text" name="nombre" placeholder="TU NOMBRE DE GUERRA" required>
+            <input type="number" name="edad" placeholder="EDAD" required>
+            <input type="email" name="correo" placeholder="CORREO ELECTRONICO" required>
+            <button type="submit">¡UNIRSE A LA MISIÓN!</button>
+        </form>
+    </div>
+</body>
+</html>
